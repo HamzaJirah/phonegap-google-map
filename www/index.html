@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <script type="text/javascript" src="cordova.js"></script>
+        <title>Google Maps</title>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKgpE7gcpUi4zSiQiWJkmHJhQAyFr7TCI"></script>
+        <script>
+            var options;
+            window.onload = function (){
+//                document.addEventListener('deviceready', init, false);
+                init();
+            }
+            
+            function init(){
+                document.getElementById('btnLocation').style.display = "block";
+                options = {maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+            }
+            
+            function getLocation (){
+                navigator.geolocation.getCurrentPosition(success, failure, options);
+            }
+            
+            function success (position){
+                var latitude = position.coords.latitude;
+                var long = position.coords.longitude;
+                
+                var out = "<strong>Latitude:</strong> " + latitude;
+                out += "<br><strong>Longitude:</strong> " + long;
+                document.getElementById('result').innerHTML = out;
+                
+                var mapOptions = {
+                    center: {lat: latitude, lng: long},
+                    zoom: 15
+                };
+                
+                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            }
+            
+            function failure(message){
+                alert("Error: " + message.message);
+            }
+            
+            function clearScreen(){
+                document.getElementById('map-canvas').innerHTML = "";
+                document.getElementById('map-canvas').style.backgroundColor = "white";
+                document.getElementById('result').innerHTML = "";
+            }
+        </script>
+        
+        <style>
+            #container {
+                margin: 5px;
+            }
+            
+            #btnLocation {
+                display: none;
+            }
+            
+            #map-canvas {
+                height: 400px;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <button id="btnLocation" onclick="getLocation()">Get Location</button>
+            <button id="btnClear" onclick="clearScreen()">Clear</button>
+            <div id="result"></div>
+            <div id="map-canvas"></div>
+        </div> <!-- container --> 
+    </body>
+</html>
